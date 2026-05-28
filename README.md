@@ -23,7 +23,7 @@ Policy-driven governance platform for Azure DevOps pull requests. Define automat
 
 ## Prerequisites
 
-- Go 1.23+
+- Go 1.24+
 - Azure DevOps organization with a Personal Access Token (PAT) with Git/PR permissions
 
 ## Quick Start
@@ -55,8 +55,8 @@ backend/
 │   ├── routes/                # Custom API routes (simulate, execute, webhook)
 │   ├── services/              # Business logic (policy, schedule, PR, audit)
 │   ├── azuredevops/           # Azure DevOps REST API client
-│   └── models/                # Go types for policies, runs, audit events
-├── tests/                     # Unit and integration tests
+│   ├── models/                # Go types for policies, runs, audit events
+│   └── testhelpers/           # Shared test infrastructure (TestApp, fixtures)
 schemas/                       # JSON Schema for policy validation
 docs/                          # Architecture, security, runbook
 extension/                     # Phase 3: Azure DevOps extension UI
@@ -78,8 +78,8 @@ PocketBase also provides standard CRUD endpoints under `/api/collections/{collec
 # Run with hot reload (requires air)
 go run . serve
 
-# Run tests
-go test ./...
+# Run tests (with race detection)
+go test ./... -race
 
 # Run with verbose logging
 go run . serve --debug

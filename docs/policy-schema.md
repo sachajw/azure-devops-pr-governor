@@ -13,7 +13,7 @@ Policies define automation rules for Azure DevOps pull request creation. Each po
   "version": "1.0.0",
   "enabled": true,
   "scope": {
-    "organization": "pollinate",
+    "organization": "pangarabbit",
     "project": "cloudops",
     "repository": "infrastructure"
   },
