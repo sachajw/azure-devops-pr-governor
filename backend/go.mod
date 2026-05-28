@@ -1,4 +1,4 @@
-module github.com/pollinate/azure-devops-pr-governor
+module github.com/pangarabbit/azure-devops-pr-governor
 
 go 1.26.3
 

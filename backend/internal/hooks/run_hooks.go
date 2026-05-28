@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/services"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/services"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tools/hook"
 )

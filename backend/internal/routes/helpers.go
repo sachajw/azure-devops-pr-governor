@@ -3,7 +3,7 @@ package routes
 import (
 	"os"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/azuredevops"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/azuredevops"
 )
 
 // newADOClientFromEnv creates an Azure DevOps client from environment variables.

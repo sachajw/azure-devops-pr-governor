@@ -5,11 +5,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/azuredevops"
-	"github.com/pollinate/azure-devops-pr-governor/internal/hooks"
-	"github.com/pollinate/azure-devops-pr-governor/internal/routes"
-	"github.com/pollinate/azure-devops-pr-governor/internal/services"
-	_ "github.com/pollinate/azure-devops-pr-governor/migrations"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/azuredevops"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/hooks"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/routes"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/services"
+	_ "github.com/pangarabbit/azure-devops-pr-governor/migrations"
 	"github.com/pocketbase/pocketbase"
 )
 

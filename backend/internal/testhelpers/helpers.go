@@ -3,9 +3,9 @@ package testhelpers
 import (
 	"testing"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/hooks"
-	"github.com/pollinate/azure-devops-pr-governor/internal/routes"
-	_ "github.com/pollinate/azure-devops-pr-governor/migrations"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/hooks"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/routes"
+	_ "github.com/pangarabbit/azure-devops-pr-governor/migrations"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tests"
 )

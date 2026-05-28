@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/models"
-	"github.com/pollinate/azure-devops-pr-governor/internal/services"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/services"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )

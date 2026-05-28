@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/models"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
 )
 
 func newTestPRService() *PullRequestService {

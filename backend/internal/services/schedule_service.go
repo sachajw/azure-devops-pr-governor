@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/models"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
 	"github.com/robfig/cron/v3"
 	"github.com/pocketbase/pocketbase/core"
 )

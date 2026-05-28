@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/models"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
 	"github.com/pocketbase/pocketbase/core"
 )
 

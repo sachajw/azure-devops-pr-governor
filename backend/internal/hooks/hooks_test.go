@@ -3,7 +3,7 @@ package hooks_test
 import (
 	"testing"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/testhelpers"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/testhelpers"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/dbx"
 )

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/pollinate/azure-devops-pr-governor/internal/azuredevops"
-	"github.com/pollinate/azure-devops-pr-governor/internal/models"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/azuredevops"
+	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
 )
 
 // PullRequestService evaluates conditions and creates PRs via the Azure DevOps API.
