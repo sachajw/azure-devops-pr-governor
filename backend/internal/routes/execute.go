@@ -61,11 +61,29 @@ func RegisterExecuteRoute(app core.App) {
 			// Execute
 			results, err := prService.ExecutePolicyActions(e.Request.Context(), policy, runID, req.DryRun)
 			if err != nil {
+				scheduleService.FinalizeRun(e.Request.Context(), runID, string(models.RunStatusFailed), err.Error(), nil)
 				return e.JSON(http.StatusInternalServerError, map[string]string{
 					"error":   "execution failed: " + err.Error(),
 					"run_id":  runID,
 				})
 			}
+
+			allSuccess := true
+			for _, r := range results {
+				if !r.Success {
+					allSuccess = false
+					break
+				}
+			}
+
+			status := models.RunStatusSucceeded
+			if !allSuccess {
+				status = models.RunStatusFailed
+			}
+			if req.DryRun {
+				status = models.RunStatusDryRun
+			}
+			scheduleService.FinalizeRun(e.Request.Context(), runID, string(status), "", results)
 
 			return e.JSON(http.StatusOK, map[string]interface{}{
 				"run_id":   runID,

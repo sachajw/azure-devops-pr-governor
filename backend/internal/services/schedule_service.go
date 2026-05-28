@@ -14,10 +14,10 @@ import (
 
 // ScheduleService evaluates cron schedules and orchestrates policy execution.
 type ScheduleService struct {
-	app            core.App
-	policyService  *PolicyService
-	prService      *PullRequestService
-	auditService   *AuditService
+	app           core.App
+	policyService *PolicyService
+	prService     *PullRequestService
+	auditService  *AuditService
 }
 
 // NewScheduleService creates a new ScheduleService.
@@ -42,12 +42,17 @@ func (s *ScheduleService) EvaluateAndExecute(ctx context.Context, dryRun bool) (
 	summary.TotalEvaluated = len(policies)
 
 	for _, policy := range policies {
+		if ctx.Err() != nil {
+			return summary, fmt.Errorf("evaluation cancelled: %w", ctx.Err())
+		}
+
 		if !s.isCronDue(policy.Schedule.Cron, policy.Schedule.Timezone) {
 			continue
 		}
 
 		summary.TotalMatched++
 
+		// Create run record (single save, no transaction needed)
 		runID, err := s.CreateRun(policy.ID, models.TriggeredBySchedule, dryRun)
 		if err != nil {
 			log.Printf("failed to create run for policy %s: %v", policy.ID, err)
@@ -55,12 +60,13 @@ func (s *ScheduleService) EvaluateAndExecute(ctx context.Context, dryRun bool) (
 			continue
 		}
 
+		// Transition to running (single save)
 		s.updateRunStatus(runID, string(models.RunStatusRunning))
 
+		// Execute policy actions — external ADO API calls, must be outside transaction
 		results, err := s.prService.ExecutePolicyActions(ctx, policy, runID, dryRun)
 		if err != nil {
-			s.updateRunStatus(runID, string(models.RunStatusFailed))
-			s.auditService.LogError(ctx, runID, err, nil)
+			s.FinalizeRun(ctx, runID, string(models.RunStatusFailed), err.Error(), nil)
 			summary.TotalFailed++
 			continue
 		}
@@ -81,7 +87,7 @@ func (s *ScheduleService) EvaluateAndExecute(ctx context.Context, dryRun bool) (
 			status = models.RunStatusDryRun
 		}
 
-		s.updateRunStatus(runID, string(status))
+		s.FinalizeRun(ctx, runID, string(status), "", results)
 
 		if allSuccess {
 			summary.TotalSucceeded++
@@ -91,6 +97,57 @@ func (s *ScheduleService) EvaluateAndExecute(ctx context.Context, dryRun bool) (
 	}
 
 	return summary, nil
+}
+
+// FinalizeRun atomically updates run status, error, result summary, and logs a completion audit event.
+func (s *ScheduleService) FinalizeRun(ctx context.Context, runID, status, errMsg string, results []models.ActionResult) {
+	err := s.app.RunInTransaction(func(txApp core.App) error {
+		record, err := txApp.FindRecordById("runs", runID)
+		if err != nil {
+			return err
+		}
+
+		record.Set("status", status)
+		if status == string(models.RunStatusSucceeded) || status == string(models.RunStatusFailed) || status == string(models.RunStatusDryRun) {
+			record.Set("completed_at", time.Now().UTC().Format(time.RFC3339))
+		}
+
+		if errMsg != "" {
+			record.Set("error", errMsg)
+		}
+
+		if results != nil {
+			summaryJSON, jsonErr := json.Marshal(results)
+			if jsonErr == nil {
+				record.Set("result_summary", string(summaryJSON))
+			}
+		}
+
+		if err := txApp.Save(record); err != nil {
+			return err
+		}
+
+		// Log completion audit event within the same transaction
+		if s.auditService != nil {
+			collection, err := txApp.FindCollectionByNameOrId("audit_events")
+			if err != nil {
+				return err
+			}
+
+			auditRecord := core.NewRecord(collection)
+			auditRecord.Set("run", runID)
+			auditRecord.Set("event_type", "action_executed")
+			auditRecord.Set("detail", fmt.Sprintf(`{"status":"%s"}`, status))
+			if err := txApp.Save(auditRecord); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+	if err != nil {
+		log.Printf("failed to finalize run %s: %v", runID, err)
+	}
 }
 
 // isCronDue checks if a cron expression matches the current time in the given timezone.
@@ -111,7 +168,6 @@ func (s *ScheduleService) isCronDue(cronExpr, timezone string) bool {
 	prev := schedule.Next(now.Add(-time.Minute))
 	next := schedule.Next(now)
 
-	// Check if now falls within the current minute window
 	return now.After(prev.Add(-time.Second)) && now.Before(next)
 }
 
@@ -122,18 +178,43 @@ func (s *ScheduleService) CreateRun(policyID string, triggeredBy models.Triggere
 		return "", err
 	}
 
-	record := core.NewRecord(collection)
-	record.Set("policy", policyID)
-	record.Set("status", string(models.RunStatusPending))
-	record.Set("triggered_by", string(triggeredBy))
-	record.Set("dry_run", dryRun)
-	record.Set("cron_eval_time", time.Now().UTC().Format(time.RFC3339))
+	var runID string
 
-	if err := s.app.Save(record); err != nil {
+	err = s.app.RunInTransaction(func(txApp core.App) error {
+		record := core.NewRecord(collection)
+		record.Set("policy", policyID)
+		record.Set("status", string(models.RunStatusPending))
+		record.Set("triggered_by", string(triggeredBy))
+		record.Set("dry_run", dryRun)
+		record.Set("cron_eval_time", time.Now().UTC().Format(time.RFC3339))
+
+		if err := txApp.Save(record); err != nil {
+			return err
+		}
+
+		// Log audit event for run creation within the same transaction
+		if s.auditService != nil {
+			auditCol, err := txApp.FindCollectionByNameOrId("audit_events")
+			if err != nil {
+				return err
+			}
+			auditRecord := core.NewRecord(auditCol)
+			auditRecord.Set("run", record.Id)
+			auditRecord.Set("event_type", string(models.EventTypePolicyEvaluated))
+			auditRecord.Set("detail", fmt.Sprintf(`{"triggered_by":"%s","dry_run":%v}`, triggeredBy, dryRun))
+			if err := txApp.Save(auditRecord); err != nil {
+				return err
+			}
+		}
+
+		runID = record.Id
+		return nil
+	})
+	if err != nil {
 		return "", err
 	}
 
-	return record.Id, nil
+	return runID, nil
 }
 
 // updateRunStatus updates the status of a run.
@@ -151,36 +232,4 @@ func (s *ScheduleService) updateRunStatus(runID, status string) {
 	if err := s.app.Save(record); err != nil {
 		log.Printf("failed to update run %s status: %v", runID, err)
 	}
-}
-
-// updateRunError sets the error on a failed run.
-func (s *ScheduleService) updateRunError(runID, errMsg string) {
-	record, err := s.app.FindRecordById("runs", runID)
-	if err != nil {
-		return
-	}
-
-	record.Set("error", errMsg)
-	record.Set("status", string(models.RunStatusFailed))
-	record.Set("completed_at", time.Now().UTC().Format(time.RFC3339))
-
-	if err := s.app.Save(record); err != nil {
-		log.Printf("failed to update run %s error: %v", runID, err)
-	}
-}
-
-// setRunResultSummary stores the result summary JSON.
-func (s *ScheduleService) setRunResultSummary(runID string, results []models.ActionResult) {
-	summary, err := json.Marshal(results)
-	if err != nil {
-		return
-	}
-
-	record, err := s.app.FindRecordById("runs", runID)
-	if err != nil {
-		return
-	}
-
-	record.Set("result_summary", string(summary))
-	s.app.Save(record)
 }

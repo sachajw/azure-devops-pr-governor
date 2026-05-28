@@ -6,22 +6,29 @@ import (
 	"log"
 
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/tools/hook"
 )
 
 // RegisterPolicyHooks attaches validation hooks to the policies collection.
 func RegisterPolicyHooks(app core.App) {
-	app.OnRecordCreate("policies").BindFunc(func(e *core.RecordEvent) error {
-		if err := validatePolicyRecord(e.Record); err != nil {
-			return fmt.Errorf("policy validation failed: %w", err)
-		}
-		return e.Next()
+	app.OnRecordCreate("policies").Bind(&hook.Handler[*core.RecordEvent]{
+		Id: "policy-create-validate",
+		Func: func(e *core.RecordEvent) error {
+			if err := validatePolicyRecord(e.Record); err != nil {
+				return fmt.Errorf("policy validation failed: %w", err)
+			}
+			return e.Next()
+		},
 	})
 
-	app.OnRecordUpdate("policies").BindFunc(func(e *core.RecordEvent) error {
-		if err := validatePolicyRecord(e.Record); err != nil {
-			return fmt.Errorf("policy validation failed: %w", err)
-		}
-		return e.Next()
+	app.OnRecordUpdate("policies").Bind(&hook.Handler[*core.RecordEvent]{
+		Id: "policy-update-validate",
+		Func: func(e *core.RecordEvent) error {
+			if err := validatePolicyRecord(e.Record); err != nil {
+				return fmt.Errorf("policy validation failed: %w", err)
+			}
+			return e.Next()
+		},
 	})
 }
 

@@ -29,7 +29,7 @@ func (s *PullRequestService) logEvent(ctx context.Context, runID, eventType stri
 	if s.audit == nil {
 		return
 	}
-	s.logEvent(ctx, runID, eventType, detail)
+	_ = s.audit.LogEvent(ctx, runID, eventType, detail)
 }
 
 // ExecutePolicyActions evaluates conditions and executes actions for a policy.

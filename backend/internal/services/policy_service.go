@@ -8,6 +8,7 @@ import (
 
 	"github.com/pollinate/azure-devops-pr-governor/internal/models"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/dbx"
 )
 
 // PolicyService handles policy CRUD, validation, and scope resolution.
@@ -57,9 +58,12 @@ func (s *PolicyService) GetPoliciesByScope(ctx context.Context, org, project, re
 		return nil, fmt.Errorf("find policies collection: %w", err)
 	}
 
-	filter := fmt.Sprintf("scope_org = '%s' && scope_project = '%s'", org, project)
+	filter := "scope_org = {:org} && scope_project = {:project}"
+	params := dbx.Params{"org": org, "project": project}
+
 	if repo != "" {
-		filter += fmt.Sprintf(" && (scope_repo = '' || scope_repo = '%s')", repo)
+		filter += " && (scope_repo = '' || scope_repo = {:repo})"
+		params["repo"] = repo
 	}
 
 	records, err := s.app.FindRecordsByFilter(
@@ -68,6 +72,7 @@ func (s *PolicyService) GetPoliciesByScope(ctx context.Context, org, project, re
 		"-created",
 		0,
 		0,
+		params,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("query policies by scope: %w", err)
