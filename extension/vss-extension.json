@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "pr-governor",
-  "publisher": "pangarabbit",
+  "publisher": "sachajw",
   "version": "0.1.0",
   "name": "PR Governor",
   "description": "Policy-driven governance for Azure DevOps pull requests. Create policies that automate PR creation on a schedule or in response to events.",
