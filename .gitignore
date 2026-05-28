@@ -1,0 +1,32 @@
+# Go
+backend/governor
+backend/governor.exe
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# PocketBase data
+backend/pb_data/
+backend/pb_public/
+*.db
+*.db-journal
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+local.settings.json

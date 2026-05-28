@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/pollinate/azure-devops-pr-governor/schemas/policy.schema.json",
+  "title": "Policy",
+  "description": "A PR governance policy for Azure DevOps",
+  "type": "object",
+  "required": ["name", "version", "scope", "schedule", "actions"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "scope": {
+      "$ref": "#/definitions/scope"
+    },
+    "schedule": {
+      "$ref": "#/definitions/schedule"
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/condition"
+      },
+      "default": []
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/action"
+      },
+      "minItems": 1
+    },
+    "constraints": {
+      "$ref": "#/definitions/constraints"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  },
+  "definitions": {
+    "scope": {
+      "type": "object",
+      "required": ["organization", "project"],
+      "additionalProperties": false,
+      "properties": {
+        "organization": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project": {
+          "type": "string",
+          "minLength": 1
+        },
+        "repository": {
+          "type": "string"
+        }
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "required": ["cron"],
+      "additionalProperties": false,
+      "properties": {
+        "cron": {
+          "type": "string",
+          "minLength": 9
+        },
+        "timezone": {
+          "type": "string",
+          "default": "UTC"
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "required": ["type", "operator", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["branch_exists", "file_changed", "tag_matches", "date_range"]
+        },
+        "operator": {
+          "type": "string",
+          "enum": ["equals", "not_equals", "contains", "matches", "exists", "not_exists", "in_range", "not_in_range"]
+        },
+        "value": {}
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["type", "parameters"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["create_pr", "add_reviewer", "label", "comment"]
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_active_prs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "auto_complete": {
+          "type": "boolean",
+          "default": false
+        },
+        "merge_strategy": {
+          "type": "string",
+          "enum": ["merge", "squash", "rebase"],
+          "default": "squash"
+        },
+        "require_min_reviewers": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}
