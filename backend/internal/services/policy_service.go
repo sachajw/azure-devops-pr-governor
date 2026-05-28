@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/models"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/dbx"
 )

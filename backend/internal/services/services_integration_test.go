@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/services"
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/testhelpers"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/models"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/services"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/testhelpers"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/dbx"
 )

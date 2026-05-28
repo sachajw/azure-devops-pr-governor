@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/services"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/models"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/services"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )
@@ -15,10 +15,10 @@ type executeRequest struct {
 	DryRun   bool   `json:"dry_run,omitempty"`
 }
 
-// RegisterExecuteRoute registers the POST /api/pr-governor/execute route.
+// RegisterExecuteRoute registers the POST /api/pr-scheduler/execute route.
 func RegisterExecuteRoute(app core.App) {
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
-		se.Router.POST("/api/pr-governor/execute", func(e *core.RequestEvent) error {
+		se.Router.POST("/api/pr-scheduler/execute", func(e *core.RequestEvent) error {
 			var req executeRequest
 			if err := e.BindBody(&req); err != nil {
 				return e.JSON(http.StatusBadRequest, map[string]string{

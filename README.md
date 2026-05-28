@@ -1,4 +1,4 @@
-# Azure DevOps PR Governor
+# Azure DevOps PR Scheduler
 
 Policy-driven governance platform for Azure DevOps pull requests. Define automation policies that create PRs on a schedule or in response to events, with conditions, constraints, and full audit logging.
 
@@ -71,9 +71,9 @@ extension/                     # Azure DevOps extension (React + ADO UI)
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/api/pr-governor/simulate` | Dry-run a policy without creating PRs |
-| POST | `/api/pr-governor/execute` | Manually trigger a policy execution |
-| POST | `/api/pr-governor/webhook` | Receive Azure DevOps Service Hook events |
+| POST | `/api/pr-scheduler/simulate` | Dry-run a policy without creating PRs |
+| POST | `/api/pr-scheduler/execute` | Manually trigger a policy execution |
+| POST | `/api/pr-scheduler/webhook` | Receive Azure DevOps Service Hook events |
 
 PocketBase also provides standard CRUD endpoints under `/api/collections/{collection}/records`.
 

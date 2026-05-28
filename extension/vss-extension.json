@@ -1,10 +1,10 @@
 {
   "manifestVersion": 1,
-  "id": "pr-governor",
-  "publisher": "sachajw",
+  "id": "pr-scheduler",
+  "publisher": "sacha-wharton",
   "version": "0.1.0",
-  "name": "PR Governor",
-  "description": "Policy-driven governance for Azure DevOps pull requests. Create policies that automate PR creation on a schedule or in response to events.",
+  "name": "PR Scheduler",
+  "description": "Schedule and automate Azure DevOps pull requests with policy-driven rules.",
   "categories": ["Azure Repos"],
   "targets": [
     {
@@ -16,11 +16,11 @@
   },
   "contributions": [
     {
-      "id": "pr-governor-hub",
+      "id": "pr-scheduler-hub",
       "type": "ms.vss-web.hub",
       "targets": ["ms.vss-code-web.code-hub-group"],
       "properties": {
-        "name": "PR Governor",
+        "name": "PR Scheduler",
         "uri": "static/hub.html",
         "icon": "static/icon.png"
       }

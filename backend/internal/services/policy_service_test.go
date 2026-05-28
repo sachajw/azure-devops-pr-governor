@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/models"
 )
 
 func TestPolicyModel(t *testing.T) {

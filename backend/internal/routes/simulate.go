@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/models"
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/services"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/models"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/services"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 )
@@ -23,10 +23,10 @@ type simulateResponse struct {
 	WouldCreatePR  bool                   `json:"would_create_pr"`
 }
 
-// RegisterSimulateRoute registers the POST /api/pr-governor/simulate route.
+// RegisterSimulateRoute registers the POST /api/pr-scheduler/simulate route.
 func RegisterSimulateRoute(app core.App) {
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
-		se.Router.POST("/api/pr-governor/simulate", func(e *core.RequestEvent) error {
+		se.Router.POST("/api/pr-scheduler/simulate", func(e *core.RequestEvent) error {
 			var req simulateRequest
 			if err := e.BindBody(&req); err != nil {
 				return e.JSON(http.StatusBadRequest, map[string]string{

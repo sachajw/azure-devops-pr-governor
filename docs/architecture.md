@@ -21,7 +21,7 @@ The backend is a Go application using PocketBase as a framework. It provides:
 - **Admin UI** — Built-in dashboard at `/_/` for managing collections, records, and settings
 - **Cron Scheduler** — Built-in `app.Cron()` runs the schedule evaluator every 5 minutes
 - **Record Hooks** — `OnRecordCreate`/`OnRecordUpdate` for policy validation
-- **Custom Routes** — `/api/pr-governor/*` for simulation, execution, and webhook handling
+- **Custom Routes** — `/api/pr-scheduler/*` for simulation, execution, and webhook handling
 
 ### Data Flow
 

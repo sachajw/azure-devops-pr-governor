@@ -5,11 +5,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/azuredevops"
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/hooks"
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/routes"
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/services"
-	_ "github.com/pangarabbit/azure-devops-pr-governor/migrations"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/azuredevops"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/hooks"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/routes"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/services"
+	_ "github.com/sachajw/azure-devops-pr-scheduler/migrations"
 	"github.com/pocketbase/pocketbase"
 )
 

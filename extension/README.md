@@ -1,6 +1,6 @@
-# PR Governor — Azure DevOps Extension
+# PR Scheduler — Azure DevOps Extension
 
-React-based Azure DevOps extension for managing PR Governor policies, viewing run history, and triggering simulations/executions.
+React-based Azure DevOps extension for managing PR Scheduler policies, viewing run history, and triggering simulations/executions.
 
 ## Prerequisites
 

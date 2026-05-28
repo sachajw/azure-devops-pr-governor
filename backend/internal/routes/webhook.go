@@ -9,10 +9,10 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 )
 
-// RegisterWebhookRoute registers the POST /api/pr-governor/webhook route.
+// RegisterWebhookRoute registers the POST /api/pr-scheduler/webhook route.
 func RegisterWebhookRoute(app core.App) {
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
-		se.Router.POST("/api/pr-governor/webhook", func(e *core.RequestEvent) error {
+		se.Router.POST("/api/pr-scheduler/webhook", func(e *core.RequestEvent) error {
 			var payload map[string]interface{}
 			if err := e.BindBody(&payload); err != nil {
 				return e.JSON(http.StatusBadRequest, map[string]string{

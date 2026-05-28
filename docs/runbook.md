@@ -65,7 +65,7 @@ curl -H "Authorization: Bearer <token>" \
 2. Grant **Code (read & write)** and **Pull Requests (read & write)**
 3. Update the environment variable: `export AZURE_DEVOPS_PAT="new-pat"`
 4. Restart the backend: `kill -HUP <pid>` or restart the container
-5. Verify by running a simulation: `POST /api/pr-governor/simulate`
+5. Verify by running a simulation: `POST /api/pr-scheduler/simulate`
 
 ## Troubleshooting
 

@@ -20,7 +20,7 @@ For production deployment:
 PocketBase provides a built-in superuser admin account:
 
 - Created on first startup via the admin UI (`/_/`)
-- All custom routes under `/api/pr-governor/*` require superuser auth
+- All custom routes under `/api/pr-scheduler/*` require superuser auth
 - PocketBase CRUD endpoints use collection-level access rules
 
 ## Authorization

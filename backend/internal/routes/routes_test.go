@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pangarabbit/azure-devops-pr-governor/internal/testhelpers"
+	"github.com/sachajw/azure-devops-pr-scheduler/internal/testhelpers"
 	"github.com/pocketbase/pocketbase/tests"
 )
 
@@ -19,7 +19,7 @@ func TestSimulateRoute(t *testing.T) {
 		scenario := tests.ApiScenario{
 			Name:           "no auth",
 			Method:         http.MethodPost,
-			URL:            "/api/pr-governor/simulate",
+			URL:            "/api/pr-scheduler/simulate",
 			Body:           strings.NewReader(`{"policy_id":"` + policyID + `"}`),
 			Headers:        map[string]string{"Content-Type": "application/json"},
 			ExpectedStatus: 401,
@@ -41,7 +41,7 @@ func TestSimulateRoute(t *testing.T) {
 		scenario := tests.ApiScenario{
 			Name:   "simulate existing policy",
 			Method: http.MethodPost,
-			URL:    "/api/pr-governor/simulate",
+			URL:    "/api/pr-scheduler/simulate",
 			Body:   strings.NewReader(`{"policy_id":"` + policyID + `"}`),
 			Headers: map[string]string{
 				"Content-Type":  "application/json",
@@ -67,7 +67,7 @@ func TestSimulateRoute(t *testing.T) {
 		scenario := tests.ApiScenario{
 			Name:   "missing policy_id",
 			Method: http.MethodPost,
-			URL:    "/api/pr-governor/simulate",
+			URL:    "/api/pr-scheduler/simulate",
 			Body:   strings.NewReader(`{}`),
 			Headers: map[string]string{
 				"Content-Type":  "application/json",
@@ -91,7 +91,7 @@ func TestSimulateRoute(t *testing.T) {
 		scenario := tests.ApiScenario{
 			Name:   "nonexistent policy",
 			Method: http.MethodPost,
-			URL:    "/api/pr-governor/simulate",
+			URL:    "/api/pr-scheduler/simulate",
 			Body:   strings.NewReader(`{"policy_id":"nonexistent123"}`),
 			Headers: map[string]string{
 				"Content-Type":  "application/json",
@@ -115,7 +115,7 @@ func TestExecuteRoute(t *testing.T) {
 		scenario := tests.ApiScenario{
 			Name:           "no auth",
 			Method:         http.MethodPost,
-			URL:            "/api/pr-governor/execute",
+			URL:            "/api/pr-scheduler/execute",
 			Body:           strings.NewReader(`{"policy_id":"test"}`),
 			Headers:        map[string]string{"Content-Type": "application/json"},
 			ExpectedStatus: 401,
@@ -137,7 +137,7 @@ func TestExecuteRoute(t *testing.T) {
 		scenario := tests.ApiScenario{
 			Name:   "dry run execution",
 			Method: http.MethodPost,
-			URL:    "/api/pr-governor/execute",
+			URL:    "/api/pr-scheduler/execute",
 			Body:   strings.NewReader(`{"policy_id":"` + policyID + `","dry_run":true}`),
 			Headers: map[string]string{
 				"Content-Type":  "application/json",
@@ -163,7 +163,7 @@ func TestExecuteRoute(t *testing.T) {
 		scenario := tests.ApiScenario{
 			Name:   "missing policy_id",
 			Method: http.MethodPost,
-			URL:    "/api/pr-governor/execute",
+			URL:    "/api/pr-scheduler/execute",
 			Body:   strings.NewReader(`{"dry_run":true}`),
 			Headers: map[string]string{
 				"Content-Type":  "application/json",
@@ -189,7 +189,7 @@ func TestWebhookRoute(t *testing.T) {
 		scenario := tests.ApiScenario{
 			Name:   "webhook accepted",
 			Method: http.MethodPost,
-			URL:    "/api/pr-governor/webhook",
+			URL:    "/api/pr-scheduler/webhook",
 			Body:   strings.NewReader(`{"event":"push","ref":"refs/heads/main"}`),
 			Headers: map[string]string{
 				"Content-Type":  "application/json",

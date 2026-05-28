@@ -1,4 +1,4 @@
-module github.com/pangarabbit/azure-devops-pr-governor
+module github.com/sachajw/azure-devops-pr-scheduler
 
 go 1.26.3
 

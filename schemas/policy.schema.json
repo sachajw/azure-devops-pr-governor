@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/pollinate/azure-devops-pr-governor/schemas/policy.schema.json",
+  "$id": "https://github.com/pollinate/azure-devops-pr-scheduler/schemas/policy.schema.json",
   "title": "Policy",
   "description": "A PR governance policy for Azure DevOps",
   "type": "object",

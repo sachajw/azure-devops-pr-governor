@@ -114,13 +114,13 @@ export class PocketBaseClient {
   // Custom endpoints
 
   async simulate(policyId: string): Promise<SimulateResult> {
-    return this.request<SimulateResult>("POST", "/api/pr-governor/simulate", {
+    return this.request<SimulateResult>("POST", "/api/pr-scheduler/simulate", {
       policy_id: policyId,
     });
   }
 
   async execute(policyId: string, dryRun = false): Promise<ExecuteResult> {
-    return this.request<ExecuteResult>("POST", "/api/pr-governor/execute", {
+    return this.request<ExecuteResult>("POST", "/api/pr-scheduler/execute", {
       policy_id: policyId,
       dry_run: dryRun,
     });
