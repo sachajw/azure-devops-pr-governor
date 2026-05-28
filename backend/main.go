@@ -9,6 +9,7 @@ import (
 	"github.com/pollinate/azure-devops-pr-governor/internal/hooks"
 	"github.com/pollinate/azure-devops-pr-governor/internal/routes"
 	"github.com/pollinate/azure-devops-pr-governor/internal/services"
+	_ "github.com/pollinate/azure-devops-pr-governor/migrations"
 	"github.com/pocketbase/pocketbase"
 )
 

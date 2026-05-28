@@ -96,7 +96,6 @@ func (s *PolicyService) GetPolicyByID(ctx context.Context, id string) (*models.P
 
 // ValidatePolicyJSON validates a raw JSON payload against the policy schema.
 func (s *PolicyService) ValidatePolicyJSON(raw json.RawMessage) error {
-	// Load schema from embedded or filesystem path
 	schemaPath := os.Getenv("POLICY_SCHEMA_PATH")
 	if schemaPath == "" {
 		schemaPath = "../schemas/policy.schema.json"
@@ -120,8 +119,7 @@ func (s *PolicyService) ValidatePolicyJSON(raw json.RawMessage) error {
 	return validateAgainstSchema(payload, schema)
 }
 
-// validateAgainstSchema performs basic JSON schema validation.
-// For production, use a full JSON schema validator library.
+// validateAgainstSchema performs basic required-field validation.
 func validateAgainstSchema(payload, schema interface{}) error {
 	schemaMap, ok := schema.(map[string]interface{})
 	if !ok {
@@ -166,26 +164,39 @@ func recordToPolicy(r *core.Record) (*models.Policy, error) {
 		Updated: r.GetDateTime("updated").String(),
 	}
 
-	if v := r.Get("conditions"); v != nil {
-		if raw, ok := v.(string); ok && raw != "" {
-			json.Unmarshal([]byte(raw), &p.Conditions)
-		}
+	p.Conditions = parseJSONField[[]models.PolicyCondition](r.Get("conditions"))
+	p.Actions = parseJSONField[[]models.PolicyAction](r.Get("actions"))
+	p.Constraints = parseJSONField[*models.PolicyConstraints](r.Get("constraints"))
+	p.Tags = parseJSONField[[]string](r.Get("tags"))
+
+	return p, nil
+}
+
+// parseJSONField handles PocketBase JSON fields that may be strings or already-parsed values.
+func parseJSONField[T any](v interface{}) T {
+	var zero T
+	if v == nil {
+		return zero
 	}
-	if v := r.Get("actions"); v != nil {
-		if raw, ok := v.(string); ok && raw != "" {
-			json.Unmarshal([]byte(raw), &p.Actions)
-		}
-	}
-	if v := r.Get("constraints"); v != nil {
-		if raw, ok := v.(string); ok && raw != "" {
-			json.Unmarshal([]byte(raw), &p.Constraints)
-		}
-	}
-	if v := r.Get("tags"); v != nil {
-		if raw, ok := v.(string); ok && raw != "" {
-			json.Unmarshal([]byte(raw), &p.Tags)
+
+	// PocketBase may return the value as a string (raw JSON) or as a parsed Go value
+	if raw, ok := v.(string); ok && raw != "" {
+		var result T
+		if json.Unmarshal([]byte(raw), &result) == nil {
+			return result
 		}
 	}
 
-	return p, nil
+	// Already parsed by PocketBase — re-marshal to get into the target type
+	reRaw, err := json.Marshal(v)
+	if err != nil {
+		return zero
+	}
+
+	var result T
+	if json.Unmarshal(reRaw, &result) == nil {
+		return result
+	}
+
+	return zero
 }
