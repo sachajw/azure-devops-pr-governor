@@ -1,0 +1,32 @@
+{
+  "name": "pr-governor-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Azure DevOps extension for PR Governor policy management",
+  "scripts": {
+    "build": "webpack --mode production",
+    "dev": "webpack serve --mode development",
+    "clean": "rm -rf dist",
+    "package": "npm run clean && npm run build && npx tfx-cli extension create --rev-version"
+  },
+  "dependencies": {
+    "azure-devops-extension-sdk": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "mini-css-extract-plugin": "^2.9.2",
+    "sass": "^1.82.0",
+    "sass-loader": "^16.0.4",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.0",
+    "webpack-dev-server": "^5.2.0"
+  }
+}

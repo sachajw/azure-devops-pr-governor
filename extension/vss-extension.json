@@ -1,0 +1,43 @@
+{
+  "manifestVersion": 1,
+  "id": "pr-governor",
+  "publisher": "pangarabbit",
+  "version": "0.1.0",
+  "name": "PR Governor",
+  "description": "Policy-driven governance for Azure DevOps pull requests. Create policies that automate PR creation on a schedule or in response to events.",
+  "categories": ["Azure Repos"],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "icons": {
+    "default": "static/icon.png"
+  },
+  "contributions": [
+    {
+      "id": "pr-governor-hub",
+      "type": "ms.vss-web.hub",
+      "targets": ["ms.vss-code-web.code-hub-group"],
+      "properties": {
+        "name": "PR Governor",
+        "uri": "static/hub.html",
+        "icon": "static/icon.png"
+      }
+    }
+  ],
+  "scopes": [
+    "vso.code_write",
+    "vso.build"
+  ],
+  "files": [
+    {
+      "path": "static",
+      "addressable": true
+    },
+    {
+      "path": "dist",
+      "addressable": true
+    }
+  ]
+}

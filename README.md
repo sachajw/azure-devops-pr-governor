@@ -19,11 +19,12 @@ Policy-driven governance platform for Azure DevOps pull requests. Define automat
 
 - **PocketBase** — backend framework providing REST API, admin UI, cron scheduling, record hooks, and embedded SQLite
 - **Azure DevOps API** — external API for creating pull requests and reading repository state
-- **Extension** — Azure DevOps private extension for policy management UI (Phase 3)
+- **Extension** — Azure DevOps private extension for policy management UI (React + ADO UI components)
 
 ## Prerequisites
 
 - Go 1.24+
+- Node.js 20+ (for extension)
 - Azure DevOps organization with a Personal Access Token (PAT) with Git/PR permissions
 
 ## Quick Start
@@ -59,7 +60,11 @@ backend/
 │   └── testhelpers/           # Shared test infrastructure (TestApp, fixtures)
 schemas/                       # JSON Schema for policy validation
 docs/                          # Architecture, security, runbook
-extension/                     # Phase 3: Azure DevOps extension UI
+extension/                     # Azure DevOps extension (React + ADO UI)
+├── src/                       # TypeScript React components
+├── static/                    # HTML shell, icon
+├── vss-extension.json         # Extension manifest
+└── scripts/                   # Build and package scripts
 ```
 
 ## API Endpoints
@@ -84,6 +89,17 @@ go test ./... -race
 # Run with verbose logging
 go run . serve --debug
 ```
+
+## Extension (Azure DevOps UI)
+
+```bash
+cd extension
+npm install
+npm run dev        # Dev server on :3000
+npm run package    # Build + package as VSIX
+```
+
+See [extension/README.md](extension/README.md) for full setup and publishing instructions.
 
 ## License
 
